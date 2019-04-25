@@ -31,7 +31,9 @@ class JoinTest extends SparkTest {
 
   test("orders with customer names and genders") {
 
-    val actualDF = spark.emptyDataFrame // Replace this with actual code to pass tests
+//    val actualDF = spark.emptyDataFrame // Replace this with actual code to pass tests
+
+    val actualDF = TestData.customers.join(TestData.orders,"customerId").join(TestData.genders,"genderCode");
 
     val expectedDF = Seq(
       ("M", 1, "Alex", 1, 5.0, "Male"),
@@ -46,7 +48,7 @@ class JoinTest extends SparkTest {
 
   test("all unique customers with minimum one order") {
 
-    val actualDF = spark.emptyDataFrame // Replace this with actual code to pass tests
+    val actualDF = TestData.customers.join(TestData.orders,Seq("customerId"),"left_semi")
 
     val expectedDF = Seq(
       (1, "Alex", "M"),
@@ -56,9 +58,11 @@ class JoinTest extends SparkTest {
     checkAnswer(actualDF, expectedDF)
   }
 
-  test("all possible customer and orders combinations") {
+  test("all possible customer and genders combinations") {
 
-    val actualDF = spark.emptyDataFrame // Replace this with actual code to pass tests
+//    val actualDF = spark.emptyDataFrame // Replace this with actual code to pass tests
+
+    val actualDF = TestData.customers.crossJoin(TestData.genders).select("customerId", "name", "gender")
 
     val expectedDF = Seq((1,"Alex","Female"),
       (1,"Alex","Male"),
@@ -75,7 +79,6 @@ class JoinTest extends SparkTest {
       (5,"Julia","Female"),
       (5,"Julia","Male"),
       (5,"Julia","Other")).toDF("customerId", "name", "gender")
-
     checkAnswer(actualDF, expectedDF)
   }
 
